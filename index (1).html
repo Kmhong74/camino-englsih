@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2f5d50">
+<title>Camino English</title>
+<style>
+:root{--bg:#f6f4ee;--card:#ffffff;--ink:#1f2a2a;--muted:#6b7570;--brand:#2f5d50;--accent:#e8b04a;--ok:#2e8b57;--bad:#c94a3a;--line:#e3dfd4;--soft:#eef3f0}
+@media (prefers-color-scheme:dark){:root{--bg:#121715;--card:#1d2421;--ink:#eef1ee;--muted:#9aa5a0;--line:#2c3531;--brand:#4f9a84;--soft:#22302b}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;background:var(--bg);color:var(--ink);padding-bottom:90px;line-height:1.45}
+button{font-family:inherit;cursor:pointer}
+.top{position:sticky;top:0;z-index:5;background:var(--bg)}
+header{background:var(--brand);color:#fff;padding:14px 16px 12px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+h1{margin:0;font-size:20px}
+.sub{font-size:12px;opacity:.85}
+.speed{border:1px solid rgba(255,255,255,.5);background:transparent;color:#fff;border-radius:16px;padding:6px 12px;font-size:13px}
+.levels{display:flex;gap:6px;padding:10px 16px 0}
+.lvb{flex:1;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:12px;padding:8px 4px;font-size:15px;font-weight:700;line-height:1.2}
+.lvb small{display:block;font-size:11px;font-weight:500;color:var(--muted);margin-top:2px}
+.lvb.on{background:var(--accent);border-color:var(--accent);color:#2a2410}
+.lvb.on small{color:#4a3f1c}
+.lvdesc{font-size:12px;color:var(--muted);padding:6px 16px 0}
+.lvtag{display:inline-block;font-size:11px;font-weight:700;border-radius:8px;padding:1px 7px;margin-right:6px;background:var(--accent);color:#2a2410;vertical-align:middle}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:10px 16px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:20px;padding:8px 14px;font-size:14px}
+.chip.on{background:var(--brand);color:#fff;border-color:var(--brand)}
+main{padding:4px 16px 16px;max-width:640px;margin:0 auto}
+.prog{display:flex;align-items:center;gap:10px;margin:6px 0 12px;font-size:13px;color:var(--muted)}
+.bar{flex:1;height:8px;background:var(--line);border-radius:8px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--ok);transition:width .3s}
+.row{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:10px}
+.row.done{opacity:.6}
+.spk{flex:none;width:44px;height:44px;border-radius:50%;border:0;background:var(--soft);font-size:20px}
+.txt{flex:1;min-width:0}
+.en{font-size:17px;font-weight:700}
+.pr{font-size:14px;color:var(--brand);margin-top:2px}
+.ko{font-size:14px;color:var(--muted);margin-top:2px}
+.chk{flex:none;border:0;background:none;font-size:24px;padding:4px}
+.opt{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--muted);margin:6px 0 12px}
+.opt input{width:20px;height:20px}
+.fc{background:var(--card);border:1px solid var(--line);border-radius:20px;min-height:260px;padding:24px 20px;display:flex;align-items:center;justify-content:center;text-align:center;box-shadow:0 4px 14px rgba(0,0,0,.06);animation:pop .25s}
+.fc .back{display:none}.fc.flip .front{display:none}.fc.flip .back{display:block}
+@keyframes pop{from{transform:scale(.97);opacity:.6}to{transform:none;opacity:1}}
+.tag{display:inline-block;font-size:12px;background:var(--soft);color:var(--brand);border-radius:10px;padding:3px 10px;margin-bottom:14px}
+.big{font-size:26px;font-weight:800;line-height:1.3}
+.big.kor{font-size:24px}
+.hint{font-size:13px;color:var(--muted);margin-top:18px}
+.back .pr{font-size:18px;margin-top:12px}
+.back .en{font-size:15px;color:var(--muted);font-weight:500;margin-top:10px}
+.cnt{text-align:center;color:var(--muted);font-size:14px;margin:12px 0}
+.btns{display:flex;gap:8px}
+.btns button,.wide{flex:1;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:14px;padding:14px 8px;font-size:15px;font-weight:600}
+.wide{width:100%;margin-top:10px;display:block}
+.wide.main{background:var(--brand);color:#fff;border-color:var(--brand)}
+.wide.ok{background:var(--ok);color:#fff;border-color:var(--ok)}
+.q{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:22px 18px;text-align:center;margin-bottom:14px}
+.q .ask{font-size:13px;color:var(--muted);margin-bottom:10px}
+.q .big{font-size:22px}
+.choice{display:block;width:100%;text-align:left;border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:14px;padding:14px;font-size:16px;margin-bottom:10px}
+.choice.right{border-color:var(--ok);background:rgba(46,139,87,.12)}
+.choice.wrong{border-color:var(--bad);background:rgba(201,74,58,.12)}
+.choice small{display:block;color:var(--brand);font-size:13px;margin-top:3px}
+.empty{text-align:center;padding:40px 10px;color:var(--muted)}
+.empty .e{font-size:48px}
+.empty h2{color:var(--ink);font-size:20px;margin:10px 0 6px}
+.score{font-size:48px;font-weight:800;color:var(--brand)}
+.sec{font-size:13px;color:var(--muted);margin:18px 0 8px;font-weight:700}
+.del{flex:none;border:0;background:none;font-size:13px;color:var(--bad);padding:6px}
+.small{font-size:13px;color:var(--muted);text-align:center;margin-top:16px}
+nav{position:fixed;bottom:0;left:0;right:0;display:flex;background:var(--card);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom);z-index:6}
+nav button{flex:1;border:0;background:none;padding:9px 0 11px;font-size:12px;color:var(--muted);position:relative}
+nav button .i{display:block;font-size:21px;margin-bottom:2px}
+nav button.on{color:var(--brand);font-weight:700}
+.badge{position:absolute;top:4px;left:55%;background:var(--bad);color:#fff;font-size:10px;border-radius:10px;padding:1px 6px}
+</style>
+</head>
+<body>
+<div class="top">
+  <header>
+    <div><h1>🥾 Camino English</h1><div class="sub">순례길 영어 회화 · 기초 → 중급 → 고급</div></div>
+    <button class="speed" id="speed">🐢 천천히</button>
+  </header>
+  <div class="levels" id="levels"></div>
+  <div class="lvdesc" id="lvdesc"></div>
+  <div class="chips" id="chips"></div>
+</div>
+<main id="app"></main>
+<nav id="nav">
+  <button data-tab="list" class="on"><span class="i">📖</span>문장</button>
+  <button data-tab="card"><span class="i">🃏</span>카드</button>
+  <button data-tab="quiz"><span class="i">✏️</span>퀴즈</button>
+  <button data-tab="review"><span class="i">🔁</span>복습<span class="badge" id="badge" style="display:none"></span></button>
+</nav>
+
+<script>
+const CATS=[
+ {k:'all',n:'🌍 전체'},
+ {k:'greet',n:'👋 인사'},
+ {k:'stay',n:'🛏️ 숙소'},
+ {k:'food',n:'🍽️ 식당·카페'},
+ {k:'way',n:'🧭 길 묻기'},
+ {k:'shop',n:'🛒 쇼핑·약국'},
+ {k:'health',n:'🩹 건강·응급'},
+ {k:'talk',n:'🤝 순례자 대화'},
+ {k:'move',n:'🚌 교통'}
+];
+const LV=[{k:'b',n:'기초',e:'🌱',d:'짧고 꼭 필요한 문장'},{k:'m',n:'중급',e:'🌿',d:'설명하고 부탁하는 문장'},{k:'a',n:'고급',e:'🌳',d:'공손하고 자연스러운 표현'}];
+// [영어, 한국어 뜻, 한글 발음]
+const D={b:{
+greet:[
+ ["Hello, nice to meet you.","안녕하세요, 만나서 반가워요.","헬로, 나이스 투 밋 유"],
+ ["My name is Coach.","제 이름은 코치예요.","마이 네임 이즈 코치"],
+ ["I'm from Korea.","한국에서 왔어요.","아임 프롬 코리아"],
+ ["How are you today?","오늘 어떠세요?","하우 아 유 투데이"],
+ ["I'm fine, thank you.","잘 지내요, 고마워요.","아임 파인, 땡큐"],
+ ["Where are you from?","어디서 오셨어요?","웨어 아 유 프롬"],
+ ["I don't speak English well.","영어를 잘 못해요.","아이 돈ㅌ 스픽 잉글리시 웰"],
+ ["Could you speak slowly, please?","천천히 말해 주시겠어요?","쿠쥬 스픽 슬로울리, 플리즈"],
+ ["Sorry, could you say that again?","죄송한데, 다시 말해 주시겠어요?","쏘리, 쿠쥬 세이 댓 어겐"],
+ ["See you later!","나중에 봐요!","씨 유 레이러"]
+],
+stay:[
+ ["Do you have a bed for tonight?","오늘 밤 묵을 침대 있어요?","두 유 해브 어 베드 포 투나잇"],
+ ["How much is it per night?","하룻밤에 얼마예요?","하우 머치 이즈 잇 퍼 나잇"],
+ ["Here is my pilgrim passport.","여기 제 순례자 여권이에요.","히어 이즈 마이 필그림 패스포트"],
+ ["What time is check-out?","체크아웃은 몇 시예요?","왓 타임 이즈 체크아웃"],
+ ["Where is the shower?","샤워실은 어디예요?","웨어 이즈 더 샤워"],
+ ["Is there a washing machine?","세탁기 있어요?","이즈 데어 어 워싱 머신"],
+ ["Can I have a lower bunk?","아래 칸 침대를 써도 될까요?","캔 아이 해브 어 로어 벙크"],
+ ["What's the Wi-Fi password?","와이파이 비밀번호가 뭐예요?","왓츠 더 와이파이 패스워드"],
+ ["What time do you close the door?","문은 몇 시에 닫아요?","왓 타임 두 유 클로즈 더 도어"],
+ ["Can I leave my backpack here?","배낭을 여기 둬도 될까요?","캔 아이 리브 마이 백팩 히어"]
+],
+food:[
+ ["A table for one, please.","한 명이요.","어 테이블 포 원, 플리즈"],
+ ["Can I see the menu?","메뉴 좀 볼 수 있을까요?","캔 아이 씨 더 메뉴"],
+ ["What do you recommend?","뭘 추천하세요?","왓 두 유 레커멘드"],
+ ["I'll have the pilgrim's menu.","순례자 메뉴로 할게요.","아일 해브 더 필그림스 메뉴"],
+ ["A coffee with milk, please.","우유 넣은 커피 주세요.","어 커피 위드 밀크, 플리즈"],
+ ["Can I have some water?","물 좀 주시겠어요?","캔 아이 해브 썸 워러"],
+ ["It's delicious!","정말 맛있어요!","잇츠 딜리셔스"],
+ ["No meat, please.","고기는 빼 주세요.","노 밋, 플리즈"],
+ ["The bill, please.","계산서 주세요.","더 빌, 플리즈"],
+ ["Can I pay by card?","카드로 계산돼요?","캔 아이 페이 바이 카드"]
+],
+way:[
+ ["Excuse me, where is the Camino?","실례지만, 순례길이 어디예요?","익스큐즈 미, 웨어 이즈 더 카미노"],
+ ["Is this the way to Santiago?","산티아고 가는 길 맞아요?","이즈 디스 더 웨이 투 산티아고"],
+ ["How far is the next village?","다음 마을까지 얼마나 멀어요?","하우 파 이즈 더 넥스트 빌리지"],
+ ["Go straight.","쭉 직진하세요.","고 스트레이트"],
+ ["Turn left at the church.","성당에서 왼쪽으로 도세요.","턴 레프트 앳 더 처치"],
+ ["Turn right.","오른쪽으로 도세요.","턴 라잇"],
+ ["Is it far from here?","여기서 멀어요?","이즈 잇 파 프롬 히어"],
+ ["I'm lost.","길을 잃었어요.","아임 로스트"],
+ ["Can you show me on the map?","지도에서 보여 주시겠어요?","캔 유 쇼 미 온 더 맵"],
+ ["Follow the yellow arrows.","노란 화살표를 따라가세요.","팔로우 더 옐로우 애로우즈"]
+],
+shop:[
+ ["How much is this?","이거 얼마예요?","하우 머치 이즈 디스"],
+ ["Where is the supermarket?","슈퍼마켓은 어디예요?","웨어 이즈 더 수퍼마켓"],
+ ["Where is the nearest pharmacy?","가장 가까운 약국은 어디예요?","웨어 이즈 더 니어리스트 파머시"],
+ ["I need band-aids.","반창고가 필요해요.","아이 니드 밴드에이즈"],
+ ["Do you have sunscreen?","선크림 있어요?","두 유 해브 썬스크린"],
+ ["I'm just looking.","그냥 구경하는 중이에요.","아임 저스트 루킹"],
+ ["Can I get a bag?","봉투 하나 주시겠어요?","캔 아이 겟 어 백"],
+ ["Is there an ATM near here?","근처에 현금인출기 있어요?","이즈 데어 언 에이티엠 니어 히어"],
+ ["That's too expensive.","너무 비싸요.","댓츠 투 익스펜시브"],
+ ["I'll take it.","이걸로 할게요.","아일 테이크 잇"]
+],
+health:[
+ ["I need help.","도와주세요.","아이 니드 헬프"],
+ ["I have blisters on my feet.","발에 물집이 생겼어요.","아이 해브 블리스터즈 온 마이 핏"],
+ ["My knee hurts.","무릎이 아파요.","마이 니 허츠"],
+ ["I feel sick.","몸이 안 좋아요.","아이 필 씩"],
+ ["I have a headache.","머리가 아파요.","아이 해브 어 헤데이크"],
+ ["Please call an ambulance.","구급차를 불러 주세요.","플리즈 콜 언 앰뷸런스"],
+ ["Where is the hospital?","병원은 어디예요?","웨어 이즈 더 하스피럴"],
+ ["I need to rest.","좀 쉬어야 해요.","아이 니드 투 레스트"],
+ ["I'm very tired.","너무 피곤해요.","아임 베리 타이어드"],
+ ["Do you have painkillers?","진통제 있어요?","두 유 해브 페인킬러즈"]
+],
+talk:[
+ ["Buen Camino!","좋은 순례길 되세요! (순례자 인사)","부엔 카미노"],
+ ["Where did you start walking?","어디서부터 걸으셨어요?","웨어 디쥬 스타트 워킹"],
+ ["I started in Saint-Jean.","생장에서 출발했어요.","아이 스타티드 인 생장"],
+ ["How many kilometers today?","오늘 몇 킬로 걸으세요?","하우 메니 킬로미터즈 투데이"],
+ ["Why are you walking the Camino?","왜 순례길을 걸으세요?","와이 아 유 워킹 더 카미노"],
+ ["This is my first Camino.","이번이 첫 순례길이에요.","디스 이즈 마이 퍼스트 카미노"],
+ ["Let's walk together.","같이 걸어요.","렛츠 워크 투게더"],
+ ["The view is beautiful.","경치가 정말 아름다워요.","더 뷰 이즈 뷰리풀"],
+ ["I run a hair salon in Korea.","한국에서 미용실을 운영해요.","아이 런 어 헤어 살롱 인 코리아"],
+ ["Take care!","몸조심하세요!","테이크 케어"]
+],
+move:[
+ ["Where is the bus stop?","버스 정류장은 어디예요?","웨어 이즈 더 버스 스탑"],
+ ["One ticket to Santiago, please.","산티아고행 표 한 장 주세요.","원 티킷 투 산티아고, 플리즈"],
+ ["What time does the bus leave?","버스는 몇 시에 출발해요?","왓 타임 더즈 더 버스 리브"],
+ ["Can you call a taxi for me?","택시 좀 불러 주시겠어요?","캔 유 콜 어 택시 포 미"],
+ ["How long does it take?","얼마나 걸려요?","하우 롱 더즈 잇 테이크"],
+ ["Where is the train station?","기차역은 어디예요?","웨어 이즈 더 트레인 스테이션"],
+ ["Is this seat taken?","이 자리 주인 있어요?","이즈 디스 씻 테이큰"],
+ ["I want to send my backpack.","배낭을 다음 숙소로 보내고 싶어요.","아이 원ㅌ 투 센드 마이 백팩"],
+ ["Please stop here.","여기서 세워 주세요.","플리즈 스탑 히어"],
+ ["Where is the airport?","공항은 어디예요?","웨어 이즈 디 에어포트"]
+]},
+m:{
+greet:[
+ ["It's nice to finally meet you.","드디어 만나서 반가워요.","잇츠 나이스 투 파이널리 밋 유"],
+ ["I've heard a lot about you.","말씀 많이 들었어요.","아이브 허드 어 랏 어바웃 유"],
+ ["I'm traveling alone this time.","이번엔 혼자 여행하고 있어요.","아임 트래블링 얼론 디스 타임"],
+ ["How long have you been in Spain?","스페인에 온 지 얼마나 됐어요?","하우 롱 해브 유 빈 인 스페인"],
+ ["I arrived in Spain three days ago.","사흘 전에 스페인에 도착했어요.","아이 어라이브드 인 스페인 쓰리 데이즈 어고"],
+ ["My English isn't perfect, but I'll try.","영어가 완벽하진 않지만 노력해 볼게요.","마이 잉글리시 이즌ㅌ 퍼펙트, 벗 아일 트라이"],
+ ["What does that word mean?","그 단어가 무슨 뜻이에요?","왓 더즈 댓 워드 민"],
+ ["How do you say this in English?","이걸 영어로 뭐라고 해요?","하우 두 유 세이 디스 인 잉글리시"],
+ ["It was great talking to you.","이야기 나눠서 즐거웠어요.","잇 워즈 그레잇 토킹 투 유"],
+ ["Let's keep in touch.","계속 연락해요.","렛츠 킵 인 터치"]
+],
+stay:[
+ ["I'd like to stay for two nights.","이틀 묵고 싶어요.","아이드 라이크 투 스테이 포 투 나잇츠"],
+ ["Is breakfast included?","아침 식사 포함인가요?","이즈 브렉퍼스트 인클루디드"],
+ ["Do I need to make a reservation?","예약해야 하나요?","두 아이 니드 투 메이크 어 레저베이션"],
+ ["Where can I dry my clothes?","빨래는 어디서 말릴 수 있어요?","웨어 캔 아이 드라이 마이 클로즈"],
+ ["Is there a kitchen I can use?","쓸 수 있는 주방이 있나요?","이즈 데어 어 키친 아이 캔 유즈"],
+ ["The shower doesn't have hot water.","샤워기에서 뜨거운 물이 안 나와요.","더 샤워 더즌ㅌ 해브 핫 워러"],
+ ["Could I get an extra blanket?","담요 하나 더 받을 수 있을까요?","쿠다이 겟 언 엑스트라 블랭킷"],
+ ["Can I charge my phone somewhere?","어디서 휴대폰을 충전할 수 있어요?","캔 아이 차지 마이 폰 썸웨어"],
+ ["Can you recommend another albergue?","다른 알베르게를 추천해 주시겠어요?","캔 유 레커멘드 어나더 알베르게"],
+ ["I'll be leaving early tomorrow morning.","내일 아침 일찍 떠날 거예요.","아일 비 리빙 얼리 투모로우 모닝"]
+],
+food:[
+ ["Is this dish spicy?","이 요리 매워요?","이즈 디스 디시 스파이시"],
+ ["What's the local specialty here?","여기 지역 특산 요리가 뭐예요?","왓츠 더 로컬 스페셜티 히어"],
+ ["Could you make it without onions?","양파 빼고 만들어 주실 수 있어요?","쿠쥬 메이크 잇 위다웃 어니언즈"],
+ ["I'm allergic to nuts.","견과류 알레르기가 있어요.","아임 얼러직 투 넛츠"],
+ ["Can I get this to go?","이거 포장되나요?","캔 아이 겟 디스 투 고"],
+ ["We'd like to split the bill.","따로 계산할게요.","위드 라이크 투 스플릿 더 빌"],
+ ["I think there's a mistake on the bill.","계산서가 잘못된 것 같아요.","아이 띵크 데어즈 어 미스테이크 온 더 빌"],
+ ["What time does the kitchen open?","주방은 몇 시에 열어요?","왓 타임 더즈 더 키친 오픈"],
+ ["Could I have a glass of red wine?","레드와인 한 잔 주시겠어요?","쿠다이 해브 어 글래스 오브 레드 와인"],
+ ["Everything was wonderful, thank you.","전부 훌륭했어요, 감사해요.","에브리띵 워즈 원더풀, 땡큐"]
+],
+way:[
+ ["How long does it take to walk there?","거기까지 걸어서 얼마나 걸려요?","하우 롱 더즈 잇 테이크 투 워크 데어"],
+ ["Is there a shortcut?","지름길이 있나요?","이즈 데어 어 숏컷"],
+ ["Which way is shorter?","어느 길이 더 짧아요?","위치 웨이 이즈 쇼터"],
+ ["Is the path steep?","길이 가파른가요?","이즈 더 패쓰 스팁"],
+ ["Is there a café along the way?","가는 길에 카페가 있나요?","이즈 데어 어 카페 얼롱 더 웨이"],
+ ["Where can I fill up my water bottle?","물병을 어디서 채울 수 있어요?","웨어 캔 아이 필 업 마이 워러 바들"],
+ ["I missed the yellow arrow.","노란 화살표를 놓쳤어요.","아이 미스트 더 옐로우 애로우"],
+ ["It's about five kilometers from here.","여기서 5킬로미터 정도예요.","잇츠 어바웃 파이브 킬로미터즈 프롬 히어"],
+ ["Keep going until you see the bridge.","다리가 보일 때까지 계속 가세요.","킵 고잉 언틸 유 씨 더 브리지"],
+ ["Is it safe to walk at night?","밤에 걸어도 안전한가요?","이즈 잇 세이프 투 워크 앳 나잇"]
+],
+shop:[
+ ["Do you have this in a bigger size?","이거 더 큰 사이즈 있어요?","두 유 해브 디스 인 어 비거 사이즈"],
+ ["Can I try these shoes on?","이 신발 신어 봐도 돼요?","캔 아이 트라이 디즈 슈즈 온"],
+ ["What time do you open tomorrow?","내일 몇 시에 문 열어요?","왓 타임 두 유 오픈 투모로우"],
+ ["I need something for muscle pain.","근육통에 좋은 게 필요해요.","아이 니드 썸띵 포 머슬 페인"],
+ ["How often should I take this?","이건 얼마나 자주 먹어야 해요?","하우 오픈 슈다이 테이크 디스"],
+ ["Do you accept credit cards?","신용카드 받으세요?","두 유 억셉트 크레딧 카즈"],
+ ["Can I get a receipt, please?","영수증 주시겠어요?","캔 아이 겟 어 리씻, 플리즈"],
+ ["Is there a discount for pilgrims?","순례자 할인이 있나요?","이즈 데어 어 디스카운트 포 필그림즈"],
+ ["I'm looking for a lighter backpack.","더 가벼운 배낭을 찾고 있어요.","아임 루킹 포 어 라이터 백팩"],
+ ["Could you wrap it as a gift?","선물 포장해 주실 수 있어요?","쿠쥬 랩 잇 애즈 어 기프트"]
+],
+health:[
+ ["I twisted my ankle.","발목을 삐었어요.","아이 트위스티드 마이 앵클"],
+ ["I've had a fever since last night.","어젯밤부터 열이 나요.","아이브 해드 어 피버 씬스 라스트 나잇"],
+ ["It hurts when I walk.","걸을 때 아파요.","잇 허츠 웬 아이 워크"],
+ ["How should I treat this blister?","이 물집은 어떻게 치료해야 해요?","하우 슈다이 트릿 디스 블리스터"],
+ ["Is there a doctor nearby?","근처에 의사가 있나요?","이즈 데어 어 닥터 니어바이"],
+ ["I think I have sunstroke.","일사병에 걸린 것 같아요.","아이 띵크 아이 해브 썬스트로크"],
+ ["I can't walk any further today.","오늘은 더 이상 못 걷겠어요.","아이 캔ㅌ 워크 애니 퍼더 투데이"],
+ ["Do I need a prescription for this?","이거 처방전이 필요해요?","두 아이 니드 어 프리스크립션 포 디스"],
+ ["I have travel insurance.","여행자 보험이 있어요.","아이 해브 트래블 인슈어런스"],
+ ["Please write it down for me.","저한테 적어 주세요.","플리즈 라잇 잇 다운 포 미"]
+],
+talk:[
+ ["How many days have you been walking?","며칠째 걷고 계세요?","하우 메니 데이즈 해브 유 빈 워킹"],
+ ["This is my tenth day on the Camino.","순례길 10일째예요.","디스 이즈 마이 텐쓰 데이 온 더 카미노"],
+ ["Where are you staying tonight?","오늘 밤 어디서 묵으세요?","웨어 아 유 스테잉 투나잇"],
+ ["My feet are killing me!","발이 아파 죽겠어요!","마이 핏 아 킬링 미"],
+ ["Would you like to have dinner together?","같이 저녁 드실래요?","우쥬 라이크 투 해브 디너 투게더"],
+ ["I'm walking to clear my mind.","머리를 비우려고 걷고 있어요.","아임 워킹 투 클리어 마이 마인드"],
+ ["What do you do back home?","고향에서는 무슨 일 하세요?","왓 두 유 두 백 홈"],
+ ["I also teach latte art classes.","라떼아트 수업도 가르쳐요.","아이 올소 티치 라테 아트 클래시즈"],
+ ["Can I take a picture with you?","같이 사진 찍어도 될까요?","캔 아이 테이크 어 픽처 위드 유"],
+ ["I hope we meet again in Santiago.","산티아고에서 다시 만나길 바라요.","아이 홉 위 밋 어겐 인 산티아고"]
+],
+move:[
+ ["Which platform does the train leave from?","기차는 몇 번 승강장에서 출발해요?","위치 플랫폼 더즈 더 트레인 리브 프롬"],
+ ["Do I need to change trains?","기차를 갈아타야 하나요?","두 아이 니드 투 체인지 트레인즈"],
+ ["Is this the bus to León?","이거 레온 가는 버스예요?","이즈 디스 더 버스 투 레온"],
+ ["Could you tell me when to get off?","언제 내려야 하는지 알려 주시겠어요?","쿠쥬 텔 미 웬 투 겟 오프"],
+ ["How much is a taxi to the airport?","공항까지 택시비가 얼마예요?","하우 머치 이즈 어 택시 투 디 에어포트"],
+ ["The bus is running late.","버스가 늦어지고 있어요.","더 버스 이즈 러닝 레잇"],
+ ["I'd like a round-trip ticket.","왕복표로 주세요.","아이드 라이크 어 라운드트립 티킷"],
+ ["Where can I buy a ticket?","표는 어디서 사요?","웨어 캔 아이 바이 어 티킷"],
+ ["My flight has been canceled.","제 비행기가 취소됐어요.","마이 플라잇 해즈 빈 캔슬드"],
+ ["How much does it cost to send my backpack?","배낭 보내는 데 얼마예요?","하우 머치 더즈 잇 코스트 투 센드 마이 백팩"]
+]},
+a:{
+greet:[
+ ["I don't think we've met. I'm Coach.","처음 뵙는 것 같네요. 저는 코치예요.","아이 돈ㅌ 띵크 위브 멧. 아임 코치"],
+ ["Sorry, I didn't quite catch your name.","죄송해요, 성함을 잘 못 들었어요.","쏘리, 아이 디든ㅌ 콰잇 캐치 유어 네임"],
+ ["Would you mind if I joined you?","같이 앉아도 괜찮을까요?","우쥬 마인드 이프 아이 조인드 유"],
+ ["I've been looking forward to this trip for years.","몇 년 동안 이 여행을 고대해 왔어요.","아이브 빈 루킹 포워드 투 디스 트립 포 이어즈"],
+ ["Pardon my English. I'm still learning.","영어가 서툴러도 양해해 주세요. 아직 배우는 중이에요.","파든 마이 잉글리시. 아임 스틸 러닝"],
+ ["If I'd known, I would have come earlier.","알았더라면 더 일찍 왔을 거예요.","이프 아이드 노운, 아이 우드 해브 컴 얼리어"],
+ ["It's been a pleasure getting to know you.","알게 되어 정말 기뻤어요.","잇츠 빈 어 플레저 게링 투 노우 유"],
+ ["Let me know if you're ever in Korea.","한국에 오시면 꼭 연락 주세요.","렛 미 노우 이프 유어 에버 인 코리아"],
+ ["Feel free to stop me if I'm talking too much.","제가 말이 많으면 편하게 끊어 주세요.","필 프리 투 스탑 미 이프 아임 토킹 투 머치"],
+ ["Take it easy, and enjoy the rest of your journey.","무리하지 마시고 남은 여정 즐기세요.","테이크 잇 이지, 앤 인조이 더 레스트 오브 유어 저니"]
+],
+stay:[
+ ["Would it be possible to check in a bit early?","조금 일찍 체크인할 수 있을까요?","우드 잇 비 파서블 투 체크 인 어 빗 얼리"],
+ ["I was wondering if you had any private rooms.","혹시 개인실이 있는지 궁금해서요.","아이 워즈 원더링 이프 유 해드 애니 프라이빗 룸즈"],
+ ["Someone seems to have taken my towel by mistake.","누가 실수로 제 수건을 가져간 것 같아요.","썸원 심즈 투 해브 테이큰 마이 타월 바이 미스테이크"],
+ ["The person in the next bunk snores really loudly.","옆 침대 사람이 코를 정말 심하게 골아요.","더 퍼슨 인 더 넥스트 벙크 스노어즈 릴리 라우들리"],
+ ["Would you mind keeping it down a little?","조금만 조용히 해 주시겠어요?","우쥬 마인드 키핑 잇 다운 어 리를"],
+ ["I'd rather have a bed near the window, if possible.","가능하면 창가 침대가 더 좋겠어요.","아이드 래더 해브 어 베드 니어 더 윈도우, 이프 파서블"],
+ ["Do you happen to know if there are bed bugs here?","혹시 여기 빈대가 있는지 아세요?","두 유 해펀 투 노우 이프 데어 아 베드 벅스 히어"],
+ ["I'm afraid I left my charger in my room.","죄송하지만 방에 충전기를 두고 온 것 같아요.","아임 어프레이드 아이 레프트 마이 차저 인 마이 룸"],
+ ["Could you hold my reservation until six?","6시까지 예약을 잡아 두실 수 있을까요?","쿠쥬 홀드 마이 레저베이션 언틸 식스"],
+ ["Thank you for your hospitality. I really felt at home.","환대해 주셔서 감사해요. 정말 집처럼 편했어요.","땡큐 포 유어 하스피탤러티. 아이 릴리 펠트 앳 홈"]
+],
+food:[
+ ["What would you recommend for someone who doesn't eat pork?","돼지고기를 안 먹는 사람에게 뭘 추천하세요?","왓 우쥬 레커멘드 포 썸원 후 더즌ㅌ 잇 포크"],
+ ["I'll go with whatever the chef recommends.","셰프 추천 메뉴로 할게요.","아일 고 위드 와레버 더 셰프 레커멘즈"],
+ ["Could we get a table outside, if there's one available?","자리가 있으면 바깥 테이블로 주실 수 있을까요?","쿠드 위 겟 어 테이블 아웃사이드, 이프 데어즈 원 어베일러블"],
+ ["I'm afraid this isn't what I ordered.","죄송하지만 제가 주문한 게 아니에요.","아임 어프레이드 디스 이즌ㅌ 왓 아이 오더드"],
+ ["I'm trying to cut down on sugar.","설탕을 줄이려고 하고 있어요.","아임 트라잉 투 컷 다운 온 슈거"],
+ ["The coffee here is much stronger than in Korea.","여기 커피는 한국보다 훨씬 진해요.","더 커피 히어 이즈 머치 스트롱거 댄 인 코리아"],
+ ["As someone who teaches latte art, I'm curious how you make this.","라떼아트를 가르치는 사람으로서 이걸 어떻게 만드는지 궁금해요.","애즈 썸원 후 티치즈 라테 아트, 아임 큐리어스 하우 유 메이크 디스"],
+ ["It's on me tonight. You paid last time.","오늘은 제가 살게요. 지난번엔 당신이 냈잖아요.","잇츠 온 미 투나잇. 유 페이드 라스트 타임"],
+ ["I couldn't eat another bite.","더는 한 입도 못 먹겠어요.","아이 쿠든ㅌ 잇 어나더 바잇"],
+ ["Would you mind if I took a photo of the food?","음식 사진을 찍어도 될까요?","우쥬 마인드 이프 아이 툭 어 포토 오브 더 푸드"]
+],
+way:[
+ ["Do you know if the trail is still muddy after the rain?","비 온 뒤에 길이 아직 질척한지 아세요?","두 유 노우 이프 더 트레일 이즈 스틸 머디 애프터 더 레인"],
+ ["I must have taken a wrong turn somewhere.","어디선가 길을 잘못 든 게 분명해요.","아이 머스트 해브 테이큰 어 롱 턴 썸웨어"],
+ ["Is it worth taking the detour to see the monastery?","수도원을 보러 돌아가는 길로 갈 만한가요?","이즈 잇 워쓰 테이킹 더 디투어 투 씨 더 머내스터리"],
+ ["Which route would you take if you were me?","당신이 저라면 어느 길로 가겠어요?","위치 루트 우쥬 테이크 이프 유 워 미"],
+ ["The signs were a bit confusing back there.","아까 그 표지판이 좀 헷갈렸어요.","더 사인즈 워 어 빗 컨퓨징 백 데어"],
+ ["How long would it take at a relaxed pace?","여유 있게 걸으면 얼마나 걸릴까요?","하우 롱 우드 잇 테이크 앳 어 릴랙스드 페이스"],
+ ["I'd rather avoid walking along the highway.","큰길을 따라 걷는 건 피하고 싶어요.","아이드 래더 어보이드 워킹 얼롱 더 하이웨이"],
+ ["Is there anywhere to stop for water before the climb?","오르막 전에 물 마실 곳이 있나요?","이즈 데어 애니웨어 투 스탑 포 워러 비포 더 클라임"],
+ ["You can't miss it. It's right next to the fountain.","못 찾을 수가 없어요. 분수 바로 옆이에요.","유 캔ㅌ 미스 잇. 잇츠 라잇 넥스트 투 더 파운틴"],
+ ["If I keep this pace, I should arrive before sunset.","이 속도면 해 지기 전에 도착할 거예요.","이프 아이 킵 디스 페이스, 아이 슈드 어라이브 비포 썬셋"]
+],
+shop:[
+ ["I'm looking for something lightweight but waterproof.","가볍지만 방수되는 걸 찾고 있어요.","아임 루킹 포 썸띵 라잇웨잇 벗 워터프루프"],
+ ["Would you be able to give me a better price?","조금 더 싸게 해 주실 수 있나요?","우쥬 비 에이블 투 기브 미 어 베러 프라이스"],
+ ["These boots are giving me blisters. Can I exchange them?","이 등산화 때문에 물집이 생겨요. 교환할 수 있나요?","디즈 부츠 아 기빙 미 블리스터즈. 캔 아이 익스체인지 뎀"],
+ ["Is there anything you'd recommend for sore muscles?","근육통에 추천해 주실 만한 게 있나요?","이즈 데어 애니띵 유드 레커멘드 포 쏘어 머슬즈"],
+ ["Can I take this on an empty stomach?","이걸 빈속에 먹어도 되나요?","캔 아이 테이크 디스 온 언 엠티 스토맥"],
+ ["I'll think about it and come back later.","생각해 보고 나중에 다시 올게요.","아일 띵크 어바웃 잇 앤 컴 백 레이러"],
+ ["Does this come in any other colors?","이거 다른 색상도 있나요?","더즈 디스 컴 인 애니 아더 컬러즈"],
+ ["I'd like to return this. It doesn't fit.","이거 반품하고 싶어요. 사이즈가 안 맞아요.","아이드 라이크 투 리턴 디스. 잇 더즌ㅌ 핏"],
+ ["It's a bit out of my budget.","제 예산보다 조금 비싸네요.","잇츠 어 빗 아웃 오브 마이 버짓"],
+ ["Could you tell me where I can find a laundromat?","빨래방이 어디 있는지 알려 주시겠어요?","쿠쥬 텔 미 웨어 아이 캔 파인드 어 론드러맷"]
+],
+health:[
+ ["I've been feeling dizzy since this morning.","오늘 아침부터 계속 어지러워요.","아이브 빈 필링 디지 씬스 디스 모닝"],
+ ["The pain gets worse when I go downhill.","내리막길을 걸으면 통증이 더 심해져요.","더 페인 겟츠 워스 웬 아이 고 다운힐"],
+ ["Should I see a doctor, or will it heal by itself?","병원에 가야 할까요, 아니면 저절로 나을까요?","슈다이 씨 어 닥터, 오어 윌 잇 힐 바이 잇셀프"],
+ ["I think I may have pushed myself too hard.","제가 너무 무리한 것 같아요.","아이 띵크 아이 메이 해브 푸시트 마이셀프 투 하드"],
+ ["Is it serious enough that I should stop walking?","걷기를 멈춰야 할 만큼 심각한가요?","이즈 잇 시리어스 이너프 댓 아이 슈드 스탑 워킹"],
+ ["I'd like to see a doctor who speaks English.","영어를 하는 의사를 만나고 싶어요.","아이드 라이크 투 씨 어 닥터 후 스픽스 잉글리시"],
+ ["Could you explain how to take this medicine?","이 약을 어떻게 먹는지 설명해 주시겠어요?","쿠쥬 익스플레인 하우 투 테이크 디스 메디슨"],
+ ["I'll need a medical certificate for my insurance.","보험 때문에 진단서가 필요해요.","아일 니드 어 메디컬 서티피킷 포 마이 인슈어런스"],
+ ["My friend fainted. Please call for help!","친구가 쓰러졌어요. 도움을 요청해 주세요!","마이 프렌드 페인티드. 플리즈 콜 포 헬프"],
+ ["I'll take a rest day and see how I feel tomorrow.","하루 쉬고 내일 상태를 볼게요.","아일 테이크 어 레스트 데이 앤 씨 하우 아이 필 투모로우"]
+],
+talk:[
+ ["What made you decide to walk the Camino?","어떻게 순례길을 걷기로 결심하셨어요?","왓 메이드 유 디사이드 투 워크 더 카미노"],
+ ["I needed some time to think about my life.","제 삶에 대해 생각할 시간이 필요했어요.","아이 니디드 썸 타임 투 띵크 어바웃 마이 라이프"],
+ ["It's harder than I expected, but it's worth it.","생각보다 힘들지만 그만한 가치가 있어요.","잇츠 하더 댄 아이 익스펙티드, 벗 잇츠 워쓰 잇"],
+ ["I've met so many interesting people along the way.","길에서 흥미로운 사람들을 정말 많이 만났어요.","아이브 멧 쏘 메니 인터레스팅 피플 얼롱 더 웨이"],
+ ["If you don't mind me asking, where did you learn English?","실례가 안 된다면, 영어는 어디서 배우셨어요?","이프 유 돈ㅌ 마인드 미 애스킹, 웨어 디쥬 런 잉글리시"],
+ ["In Korea, a lot of people walk the Jeju Olle Trail.","한국에서는 많은 사람들이 제주 올레길을 걸어요.","인 코리아, 어 랏 오브 피플 워크 더 제주 올레 트레일"],
+ ["Whatever your reason, this place feels special.","이유가 뭐든, 이곳은 특별하게 느껴져요.","와레버 유어 리즌, 디스 플레이스 필즈 스페셜"],
+ ["We should celebrate when we reach Santiago.","산티아고에 도착하면 축하해야겠어요.","위 슈드 셀러브레이트 웬 위 리치 산티아고"],
+ ["I'll never forget the people I met here.","여기서 만난 사람들을 절대 잊지 못할 거예요.","아일 네버 퍼겟 더 피플 아이 멧 히어"],
+ ["The Camino teaches you to let go of things.","순례길은 내려놓는 법을 가르쳐 줘요.","더 카미노 티치즈 유 투 렛 고 오브 띵즈"]
+],
+move:[
+ ["I missed my connection. What are my options?","연결편을 놓쳤어요. 어떤 방법이 있을까요?","아이 미스트 마이 커넥션. 왓 아 마이 압션즈"],
+ ["Would it be faster to take the train or the bus?","기차랑 버스 중 뭐가 더 빨라요?","우드 잇 비 패스터 투 테이크 더 트레인 오어 더 버스"],
+ ["Is there a luggage service between albergues?","알베르게 사이에 짐 운송 서비스가 있나요?","이즈 데어 어 러기지 서비스 비트윈 알베르게스"],
+ ["I'd like to change my ticket to an earlier time.","표를 더 이른 시간으로 바꾸고 싶어요.","아이드 라이크 투 체인지 마이 티킷 투 언 얼리어 타임"],
+ ["Could you let me know when we get to Sarria?","사리아에 도착하면 알려 주시겠어요?","쿠쥬 렛 미 노우 웬 위 겟 투 사리아"],
+ ["My backpack didn't arrive at the albergue.","제 배낭이 알베르게에 도착하지 않았어요.","마이 백팩 디든ㅌ 어라이브 앳 디 알베르게"],
+ ["Do I need to book in advance, or can I just show up?","미리 예약해야 하나요, 아니면 그냥 가도 되나요?","두 아이 니드 투 북 인 어드밴스, 오어 캔 아이 저스트 쇼 업"],
+ ["How early should I get to the airport?","공항에 얼마나 일찍 가야 해요?","하우 얼리 슈다이 겟 투 디 에어포트"],
+ ["Is there a taxi stand nearby, or should I call one?","근처에 택시 승강장이 있나요, 아니면 불러야 하나요?","이즈 데어 어 택시 스탠드 니어바이, 오어 슈다이 콜 원"],
+ ["We're stuck in traffic. Will I make my train?","차가 막혀요. 기차 시간에 맞출 수 있을까요?","위어 스턱 인 트래픽. 윌 아이 메이크 마이 트레인"]
+]}};
+
+const ALL=[],BY={};
+// 기초 id는 이전 버전과 같게 유지 (외운 기록 보존)
+Object.keys(D).forEach(l=>Object.keys(D[l]).forEach(c=>D[l][c].forEach((r,i)=>{const x={id:(l==='b'?'':l+'-')+c+'-'+i,l,c,en:r[0],ko:r[1],pr:r[2]};ALL.push(x);BY[x.id]=x;})));
+
+const store={
+ get(k,d){try{const v=localStorage.getItem(k);return v===null?d:JSON.parse(v)}catch(e){return d}},
+ set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+};
+let mem=new Set(store.get('ce_mem',[])), wrong=new Set(store.get('ce_wrong',[]));
+let slow=store.get('ce_slow',true), onlyNew=store.get('ce_onlynew',false);
+function save(){store.set('ce_mem',[...mem]);store.set('ce_wrong',[...wrong]);updBadge();}
+
+let lv=store.get('ce_lv','b'); if(!LV.some(v=>v.k===lv))lv='b';
+let cat='greet', tab='list';
+const fc={i:0,flip:false};
+let qz=null;
+const app=document.getElementById('app');
+
+const catName=k=>CATS.find(c=>c.k===k).n;
+const lvName=k=>{const v=LV.find(v=>v.k===k);return v.e+' '+v.n};
+const items=()=>ALL.filter(x=>x.l===lv&&(cat==='all'||x.c===cat));
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+
+// 카카오톡 등 앱 안 브라우저는 음성이 안 나와서 기본 브라우저로 자동으로 열기
+(function(){const ua=navigator.userAgent||'';
+ if(/KAKAOTALK/i.test(ua)){location.href='kakaotalk://web/openExternal?url='+encodeURIComponent(location.href);}
+ else if(/Line\//i.test(ua)&&location.search.indexOf('openExternalBrowser')<0){location.href=location.href+(location.search?'&':'?')+'openExternalBrowser=1';}
+})();
+// 발음
+let VOICES=[];
+function loadVoices(){try{VOICES=speechSynthesis.getVoices()}catch(e){}}
+if('speechSynthesis' in window){loadVoices();speechSynthesis.onvoiceschanged=loadVoices;}
+function speak(text){
+ if(!('speechSynthesis' in window)){alert('이 브라우저에서는 발음이 나오지 않아요.\n\n카카오톡·네이버 등 앱 안에서 열었다면\n오른쪽 아래 ⋮ → "다른 브라우저로 열기"를 누르고\nChrome 또는 삼성 인터넷에서 열어 주세요.');return;}
+ speechSynthesis.cancel();
+ const u=new SpeechSynthesisUtterance(text);
+ u.lang='en-US'; u.rate=slow?0.75:1;
+ const v=VOICES.find(v=>v.lang==='en-US')||VOICES.find(v=>v.lang&&v.lang.startsWith('en'));
+ if(v)u.voice=v;
+ speechSynthesis.speak(u);
+}
+const speedBtn=document.getElementById('speed');
+function updSpeed(){speedBtn.textContent=slow?'🐢 천천히':'🐇 보통';}
+speedBtn.onclick=()=>{slow=!slow;store.set('ce_slow',slow);updSpeed();};
+updSpeed();
+
+function updBadge(){const b=document.getElementById('badge');b.style.display=wrong.size?'':'none';b.textContent=wrong.size;}
+
+function renderChips(){
+ const el=document.getElementById('chips'), le=document.getElementById('levels'), ld=document.getElementById('lvdesc');
+ const hide=tab==='review';
+ el.style.display=le.style.display=ld.style.display=hide?'none':'';
+ le.innerHTML=LV.map(v=>{const a=ALL.filter(x=>x.l===v.k),d=a.filter(x=>mem.has(x.id)).length;
+  return `<button class="lvb ${v.k===lv?'on':''}" data-lv="${v.k}">${v.e} ${v.n}<small>${d}/${a.length} 외움</small></button>`}).join('');
+ ld.textContent=LV.find(v=>v.k===lv).d;
+ el.innerHTML=CATS.map(c=>`<button class="chip ${c.k===cat?'on':''}" data-cat="${c.k}">${c.n}</button>`).join('');
+}
+
+function render(){
+ renderChips();
+ document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.tab===tab));
+ ({list:renderList,card:renderCard,quiz:renderQuiz,review:renderReview})[tab]();
+}
+
+function rowHTML(x,extra){
+ return `<div class="row ${mem.has(x.id)?'done':''}">
+  <button class="spk" data-say="${x.id}" aria-label="듣기">🔊</button>
+  <div class="txt" data-say="${x.id}"><div class="en">${esc(x.en)}</div><div class="pr">${esc(x.pr)}</div><div class="ko">${esc(x.ko)}</div></div>
+  ${extra||`<button class="chk" data-mem="${x.id}" aria-label="외움 표시">${mem.has(x.id)?'✅':'⬜'}</button>`}
+ </div>`;
+}
+
+function renderList(){
+ const arr=items(), done=arr.filter(x=>mem.has(x.id)).length;
+ app.innerHTML=`<div class="prog"><div class="bar"><i style="width:${done/arr.length*100}%"></i></div><span>${done}/${arr.length} 외움</span></div>`
+ + arr.map(x=>rowHTML(x)).join('')
+ + `<div class="small">문장을 누르면 발음이 나와요 · ⬜를 누르면 외운 문장으로 표시돼요</div>`;
+}
+
+function cardList(){let l=items();if(onlyNew)l=l.filter(x=>!mem.has(x.id));return l;}
+function renderCard(){
+ const list=cardList();
+ let html=`<label class="opt"><input type="checkbox" id="onlyNew" ${onlyNew?'checked':''}> 안 외운 문장만 보기</label>`;
+ if(!list.length){app.innerHTML=html+`<div class="empty"><div class="e">🎉</div><h2>모두 외웠어요!</h2>다른 카테고리로 넘어가거나 퀴즈로 확인해 보세요.</div>`;return;}
+ if(fc.i>=list.length)fc.i=0;
+ const x=list[fc.i];
+ html+=`<div class="fc ${fc.flip?'flip':''}" data-act="flip">
+   <div class="front"><div class="tag">${lvName(x.l)} · ${catName(x.c)}</div><div class="big">${esc(x.en)}</div><div class="hint">탭하면 뜻과 발음이 보여요</div></div>
+   <div class="back"><div class="tag">뜻</div><div class="big kor">${esc(x.ko)}</div><div class="pr">${esc(x.pr)}</div><div class="en">${esc(x.en)}</div></div>
+  </div>
+  <div class="cnt">${fc.i+1} / ${list.length}</div>
+  <div class="btns"><button data-act="prev">◀ 이전</button><button data-act="say">🔊 듣기</button><button data-act="next">다음 ▶</button></div>
+  <button class="wide ${mem.has(x.id)?'ok':''}" data-act="mem" data-id="${x.id}">${mem.has(x.id)?'✅ 외웠어요 (다시 누르면 취소)':'외웠어요로 표시'}</button>`;
+ app.innerHTML=html;
+ fc.cur=x; fc.len=list.length;
+}
+
+function startQuiz(mode){
+ const pool=mode==='wrong'?ALL.filter(x=>wrong.has(x.id)):items();
+ if(!pool.length)return;
+ const qs=shuffle(pool).slice(0,mode==='wrong'?pool.length:10).map(x=>{
+  const type=Math.random()<0.5?'ko2en':'en2ko';
+  let src=ALL.filter(y=>y.l===x.l&&y.c===x.c&&y.id!==x.id);
+  const opts=shuffle([x,...shuffle(src).slice(0,3)]);
+  return {x,type,opts};
+ });
+ qz={mode,qs,i:0,score:0,picked:null,wrongs:[]};
+ tab='quiz';render();
+}
+function renderQuiz(){
+ if(!qz){
+  const n=items().length;
+  app.innerHTML=`<div class="empty"><div class="e">✏️</div><h2>${lvName(lv)} · ${catName(cat)} 퀴즈</h2>${cat==='all'?'전체 문장 중':'이 카테고리에서'} 랜덤으로 ${Math.min(10,n)}문제가 나와요.<br>틀린 문제는 자동으로 복습 목록에 들어가요.</div>
+   <button class="wide main" data-act="startQuiz">퀴즈 시작</button>
+   ${wrong.size?`<button class="wide" data-act="startWrong">틀린 문제만 풀기 (${wrong.size}개)</button>`:''}`;
+  return;
+ }
+ if(qz.i>=qz.qs.length){
+  const t=qz.qs.length, pct=Math.round(qz.score/t*100);
+  app.innerHTML=`<div class="empty"><div class="score">${qz.score} / ${t}</div><h2>${pct===100?'완벽해요! 🎉':pct>=70?'잘했어요! 👏':'조금만 더 해봐요! 💪'}</h2>${qz.wrongs.length?'틀린 문장은 복습 탭에 저장됐어요.':''}</div>
+   ${qz.wrongs.map(x=>rowHTML(x,' ')).join('')}
+   <button class="wide main" data-act="${qz.mode==='wrong'?'startWrong':'startQuiz'}">${qz.mode==='wrong'?'틀린 문제 다시 풀기':'다시 풀기'}</button>
+   <button class="wide" data-act="quitQuiz">처음으로</button>`;
+  if(qz.mode==='wrong'&&!wrong.size)app.querySelector('[data-act="startWrong"]').remove();
+  return;
+ }
+ const q=qz.qs[qz.i], x=q.x, ans=qz.picked!==null;
+ const ask=q.type==='ko2en'?'이 뜻의 영어 문장은?':'이 영어 문장의 뜻은?';
+ const prompt=q.type==='ko2en'?esc(x.ko):esc(x.en);
+ app.innerHTML=`<div class="prog"><div class="bar"><i style="width:${qz.i/qz.qs.length*100}%"></i></div><span>${qz.i+1}/${qz.qs.length}${qz.mode==='wrong'?' · 복습':''}</span></div>
+  <div class="q"><div class="ask">${ask}</div><div class="big">${prompt}</div>
+  ${q.type==='en2ko'?`<button class="spk" style="margin-top:12px" data-say="${x.id}">🔊</button>`:''}</div>
+  ${q.opts.map((o,k)=>{
+   let cls='';
+   if(ans){if(o.id===x.id)cls='right';else if(k===qz.picked)cls='wrong';}
+   const label=q.type==='ko2en'?esc(o.en)+(ans?`<small>${esc(o.pr)}</small>`:''):esc(o.ko);
+   return `<button class="choice ${cls}" data-pick="${k}" ${ans?'disabled':''}>${label}</button>`;
+  }).join('')}
+  ${ans?`<button class="wide main" data-act="nextQ">${qz.i+1<qz.qs.length?'다음 문제 ▶':'결과 보기'}</button>`:''}`;
+}
+function pick(k){
+ if(!qz||qz.picked!==null)return;
+ const q=qz.qs[qz.i]; qz.picked=k;
+ if(q.opts[k].id===q.x.id){qz.score++; if(qz.mode==='wrong')wrong.delete(q.x.id);}
+ else{wrong.add(q.x.id); qz.wrongs.push(q.x);}
+ save(); speak(q.x.en); renderQuiz();
+}
+
+function renderReview(){
+ const list=ALL.filter(x=>wrong.has(x.id));
+ let html='';
+ if(!list.length){html+=`<div class="empty"><div class="e">✨</div><h2>틀린 문제가 없어요</h2>퀴즈에서 틀린 문장이 여기에 모여요.</div>`;}
+ else{
+  html+=`<button class="wide main" data-act="startWrong" style="margin-top:6px">틀린 문제만 다시 풀기 (${list.length}개)</button>`;
+  LV.forEach(v=>CATS.slice(1).forEach(c=>{
+   const l=list.filter(x=>x.l===v.k&&x.c===c.k); if(!l.length)return;
+   html+=`<div class="sec"><span class="lvtag">${v.n}</span>${c.n}</div>`+l.map(x=>rowHTML(x,`<button class="del" data-unwrong="${x.id}">빼기</button>`)).join('');
+  }));
+ }
+ const total=ALL.length, done=mem.size;
+ html+=`<div class="sec">📊 단계별 진도</div>`+LV.map(v=>{const a=ALL.filter(x=>x.l===v.k),d=a.filter(x=>mem.has(x.id)).length;
+  return `<div class="prog"><span style="width:62px">${v.e} ${v.n}</span><div class="bar"><i style="width:${d/a.length*100}%"></i></div><span>${d}/${a.length}</span></div>`}).join('')+`
+  <div class="prog"><span style="width:62px">🌍 전체</span><div class="bar"><i style="width:${done/total*100}%"></i></div><span>${done}/${total}</span></div>
+  <button class="wide" data-act="resetMem">외운 기록 초기화</button>
+  <div class="small">기록은 이 폰의 브라우저에 저장돼요.</div>`;
+ app.innerHTML=html;
+}
+
+// 이벤트
+document.getElementById('levels').addEventListener('click',e=>{
+ const b=e.target.closest('[data-lv]'); if(!b)return;
+ lv=b.dataset.lv; store.set('ce_lv',lv); fc.i=0; fc.flip=false; qz=null; render(); window.scrollTo(0,0);
+});
+document.getElementById('chips').addEventListener('click',e=>{
+ const b=e.target.closest('[data-cat]'); if(!b)return;
+ cat=b.dataset.cat; fc.i=0; fc.flip=false; qz=null; render();
+ b.scrollIntoView({inline:'center',block:'nearest',behavior:'smooth'});
+});
+document.getElementById('nav').addEventListener('click',e=>{
+ const b=e.target.closest('[data-tab]'); if(!b)return;
+ tab=b.dataset.tab; if(tab!=='quiz'||(qz&&qz.i>=qz.qs.length))qz=tab==='quiz'?null:qz; render(); window.scrollTo(0,0);
+});
+app.addEventListener('change',e=>{
+ if(e.target.id==='onlyNew'){onlyNew=e.target.checked;store.set('ce_onlynew',onlyNew);fc.i=0;fc.flip=false;renderCard();}
+});
+app.addEventListener('click',e=>{
+ const t=e.target;
+ let b;
+ if(b=t.closest('[data-mem]')){const id=b.dataset.mem;mem.has(id)?mem.delete(id):mem.add(id);save();render();return;}
+ if(b=t.closest('[data-say]')){speak(BY[b.dataset.say].en);return;}
+ if(b=t.closest('[data-pick]')){pick(+b.dataset.pick);return;}
+ if(b=t.closest('[data-unwrong]')){wrong.delete(b.dataset.unwrong);save();renderReview();return;}
+ if(!(b=t.closest('[data-act]')))return;
+ const a=b.dataset.act;
+ if(a==='flip'){fc.flip=!fc.flip;renderCard();if(!fc.flip)return;}
+ else if(a==='prev'){fc.i=(fc.i-1+fc.len)%fc.len;fc.flip=false;renderCard();}
+ else if(a==='next'){fc.i=(fc.i+1)%fc.len;fc.flip=false;renderCard();}
+ else if(a==='say'){speak(fc.cur.en);}
+ else if(a==='mem'){const id=b.dataset.id;if(mem.has(id))mem.delete(id);else{mem.add(id);}save();
+   if(onlyNew&&mem.has(id)){fc.flip=false;}renderCard();}
+ else if(a==='startQuiz')startQuiz('normal');
+ else if(a==='startWrong')startQuiz('wrong');
+ else if(a==='nextQ'){qz.i++;qz.picked=null;renderQuiz();window.scrollTo(0,0);}
+ else if(a==='quitQuiz'){qz=null;renderQuiz();}
+ else if(a==='resetMem'){if(confirm('외운 기록과 틀린 문제 기록을 모두 지울까요?')){mem.clear();wrong.clear();save();renderReview();}}
+});
+
+updBadge();
+render();
+</script>
+</body>
+</html>
