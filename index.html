@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2f5d50">
+<title>Camino English</title>
+<style>
+:root{--bg:#f6f4ee;--card:#ffffff;--ink:#1f2a2a;--muted:#6b7570;--brand:#2f5d50;--accent:#e8b04a;--ok:#2e8b57;--bad:#c94a3a;--line:#e3dfd4;--soft:#eef3f0}
+@media (prefers-color-scheme:dark){:root{--bg:#121715;--card:#1d2421;--ink:#eef1ee;--muted:#9aa5a0;--line:#2c3531;--brand:#4f9a84;--soft:#22302b}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;background:var(--bg);color:var(--ink);padding-bottom:90px;line-height:1.45}
+button{font-family:inherit;cursor:pointer}
+.top{position:sticky;top:0;z-index:5;background:var(--bg)}
+header{background:var(--brand);color:#fff;padding:14px 16px 12px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+h1{margin:0;font-size:20px}
+.sub{font-size:12px;opacity:.85}
+.speed{border:1px solid rgba(255,255,255,.5);background:transparent;color:#fff;border-radius:16px;padding:6px 12px;font-size:13px}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:10px 16px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:20px;padding:8px 14px;font-size:14px}
+.chip.on{background:var(--brand);color:#fff;border-color:var(--brand)}
+main{padding:4px 16px 16px;max-width:640px;margin:0 auto}
+.prog{display:flex;align-items:center;gap:10px;margin:6px 0 12px;font-size:13px;color:var(--muted)}
+.bar{flex:1;height:8px;background:var(--line);border-radius:8px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--ok);transition:width .3s}
+.row{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:10px}
+.row.done{opacity:.6}
+.spk{flex:none;width:44px;height:44px;border-radius:50%;border:0;background:var(--soft);font-size:20px}
+.txt{flex:1;min-width:0}
+.en{font-size:17px;font-weight:700}
+.pr{font-size:14px;color:var(--brand);margin-top:2px}
+.ko{font-size:14px;color:var(--muted);margin-top:2px}
+.chk{flex:none;border:0;background:none;font-size:24px;padding:4px}
+.opt{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--muted);margin:6px 0 12px}
+.opt input{width:20px;height:20px}
+.fc{background:var(--card);border:1px solid var(--line);border-radius:20px;min-height:260px;padding:24px 20px;display:flex;align-items:center;justify-content:center;text-align:center;box-shadow:0 4px 14px rgba(0,0,0,.06);animation:pop .25s}
+.fc .back{display:none}.fc.flip .front{display:none}.fc.flip .back{display:block}
+@keyframes pop{from{transform:scale(.97);opacity:.6}to{transform:none;opacity:1}}
+.tag{display:inline-block;font-size:12px;background:var(--soft);color:var(--brand);border-radius:10px;padding:3px 10px;margin-bottom:14px}
+.big{font-size:26px;font-weight:800;line-height:1.3}
+.big.kor{font-size:24px}
+.hint{font-size:13px;color:var(--muted);margin-top:18px}
+.back .pr{font-size:18px;margin-top:12px}
+.back .en{font-size:15px;color:var(--muted);font-weight:500;margin-top:10px}
+.cnt{text-align:center;color:var(--muted);font-size:14px;margin:12px 0}
+.btns{display:flex;gap:8px}
+.btns button,.wide{flex:1;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:14px;padding:14px 8px;font-size:15px;font-weight:600}
+.wide{width:100%;margin-top:10px;display:block}
+.wide.main{background:var(--brand);color:#fff;border-color:var(--brand)}
+.wide.ok{background:var(--ok);color:#fff;border-color:var(--ok)}
+.q{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:22px 18px;text-align:center;margin-bottom:14px}
+.q .ask{font-size:13px;color:var(--muted);margin-bottom:10px}
+.q .big{font-size:22px}
+.choice{display:block;width:100%;text-align:left;border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:14px;padding:14px;font-size:16px;margin-bottom:10px}
+.choice.right{border-color:var(--ok);background:rgba(46,139,87,.12)}
+.choice.wrong{border-color:var(--bad);background:rgba(201,74,58,.12)}
+.choice small{display:block;color:var(--brand);font-size:13px;margin-top:3px}
+.empty{text-align:center;padding:40px 10px;color:var(--muted)}
+.empty .e{font-size:48px}
+.empty h2{color:var(--ink);font-size:20px;margin:10px 0 6px}
+.score{font-size:48px;font-weight:800;color:var(--brand)}
+.sec{font-size:13px;color:var(--muted);margin:18px 0 8px;font-weight:700}
+.del{flex:none;border:0;background:none;font-size:13px;color:var(--bad);padding:6px}
+.small{font-size:13px;color:var(--muted);text-align:center;margin-top:16px}
+nav{position:fixed;bottom:0;left:0;right:0;display:flex;background:var(--card);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom);z-index:6}
+nav button{flex:1;border:0;background:none;padding:9px 0 11px;font-size:12px;color:var(--muted);position:relative}
+nav button .i{display:block;font-size:21px;margin-bottom:2px}
+nav button.on{color:var(--brand);font-weight:700}
+.badge{position:absolute;top:4px;left:55%;background:var(--bad);color:#fff;font-size:10px;border-radius:10px;padding:1px 6px}
+</style>
+</head>
+<body>
+<div class="top">
+  <header>
+    <div><h1>🥾 Camino English</h1><div class="sub">순례길 영어 회화 · 하루 15분</div></div>
+    <button class="speed" id="speed">🐢 천천히</button>
+  </header>
+  <div class="chips" id="chips"></div>
+</div>
+<main id="app"></main>
+<nav id="nav">
+  <button data-tab="list" class="on"><span class="i">📖</span>문장</button>
+  <button data-tab="card"><span class="i">🃏</span>카드</button>
+  <button data-tab="quiz"><span class="i">✏️</span>퀴즈</button>
+  <button data-tab="review"><span class="i">🔁</span>복습<span class="badge" id="badge" style="display:none"></span></button>
+</nav>
+
+<script>
+const CATS=[
+ {k:'all',n:'🌍 전체'},
+ {k:'greet',n:'👋 인사'},
+ {k:'stay',n:'🛏️ 숙소'},
+ {k:'food',n:'🍽️ 식당·카페'},
+ {k:'way',n:'🧭 길 묻기'},
+ {k:'shop',n:'🛒 쇼핑·약국'},
+ {k:'health',n:'🩹 건강·응급'},
+ {k:'talk',n:'🤝 순례자 대화'},
+ {k:'move',n:'🚌 교통'}
+];
+// [영어, 한국어 뜻, 한글 발음]
+const D={
+greet:[
+ ["Hello, nice to meet you.","안녕하세요, 만나서 반가워요.","헬로, 나이스 투 밋 유"],
+ ["My name is Coach.","제 이름은 코치예요.","마이 네임 이즈 코치"],
+ ["I'm from Korea.","한국에서 왔어요.","아임 프롬 코리아"],
+ ["How are you today?","오늘 어떠세요?","하우 아 유 투데이"],
+ ["I'm fine, thank you.","잘 지내요, 고마워요.","아임 파인, 땡큐"],
+ ["Where are you from?","어디서 오셨어요?","웨어 아 유 프롬"],
+ ["I don't speak English well.","영어를 잘 못해요.","아이 돈ㅌ 스픽 잉글리시 웰"],
+ ["Could you speak slowly, please?","천천히 말해 주시겠어요?","쿠쥬 스픽 슬로울리, 플리즈"],
+ ["Sorry, could you say that again?","죄송한데, 다시 말해 주시겠어요?","쏘리, 쿠쥬 세이 댓 어겐"],
+ ["See you later!","나중에 봐요!","씨 유 레이러"]
+],
+stay:[
+ ["Do you have a bed for tonight?","오늘 밤 묵을 침대 있어요?","두 유 해브 어 베드 포 투나잇"],
+ ["How much is it per night?","하룻밤에 얼마예요?","하우 머치 이즈 잇 퍼 나잇"],
+ ["Here is my pilgrim passport.","여기 제 순례자 여권이에요.","히어 이즈 마이 필그림 패스포트"],
+ ["What time is check-out?","체크아웃은 몇 시예요?","왓 타임 이즈 체크아웃"],
+ ["Where is the shower?","샤워실은 어디예요?","웨어 이즈 더 샤워"],
+ ["Is there a washing machine?","세탁기 있어요?","이즈 데어 어 워싱 머신"],
+ ["Can I have a lower bunk?","아래 칸 침대를 써도 될까요?","캔 아이 해브 어 로어 벙크"],
+ ["What's the Wi-Fi password?","와이파이 비밀번호가 뭐예요?","왓츠 더 와이파이 패스워드"],
+ ["What time do you close the door?","문은 몇 시에 닫아요?","왓 타임 두 유 클로즈 더 도어"],
+ ["Can I leave my backpack here?","배낭을 여기 둬도 될까요?","캔 아이 리브 마이 백팩 히어"]
+],
+food:[
+ ["A table for one, please.","한 명이요.","어 테이블 포 원, 플리즈"],
+ ["Can I see the menu?","메뉴 좀 볼 수 있을까요?","캔 아이 씨 더 메뉴"],
+ ["What do you recommend?","뭘 추천하세요?","왓 두 유 레커멘드"],
+ ["I'll have the pilgrim's menu.","순례자 메뉴로 할게요.","아일 해브 더 필그림스 메뉴"],
+ ["A coffee with milk, please.","우유 넣은 커피 주세요.","어 커피 위드 밀크, 플리즈"],
+ ["Can I have some water?","물 좀 주시겠어요?","캔 아이 해브 썸 워러"],
+ ["It's delicious!","정말 맛있어요!","잇츠 딜리셔스"],
+ ["No meat, please.","고기는 빼 주세요.","노 밋, 플리즈"],
+ ["The bill, please.","계산서 주세요.","더 빌, 플리즈"],
+ ["Can I pay by card?","카드로 계산돼요?","캔 아이 페이 바이 카드"]
+],
+way:[
+ ["Excuse me, where is the Camino?","실례지만, 순례길이 어디예요?","익스큐즈 미, 웨어 이즈 더 카미노"],
+ ["Is this the way to Santiago?","산티아고 가는 길 맞아요?","이즈 디스 더 웨이 투 산티아고"],
+ ["How far is the next village?","다음 마을까지 얼마나 멀어요?","하우 파 이즈 더 넥스트 빌리지"],
+ ["Go straight.","쭉 직진하세요.","고 스트레이트"],
+ ["Turn left at the church.","성당에서 왼쪽으로 도세요.","턴 레프트 앳 더 처치"],
+ ["Turn right.","오른쪽으로 도세요.","턴 라잇"],
+ ["Is it far from here?","여기서 멀어요?","이즈 잇 파 프롬 히어"],
+ ["I'm lost.","길을 잃었어요.","아임 로스트"],
+ ["Can you show me on the map?","지도에서 보여 주시겠어요?","캔 유 쇼 미 온 더 맵"],
+ ["Follow the yellow arrows.","노란 화살표를 따라가세요.","팔로우 더 옐로우 애로우즈"]
+],
+shop:[
+ ["How much is this?","이거 얼마예요?","하우 머치 이즈 디스"],
+ ["Where is the supermarket?","슈퍼마켓은 어디예요?","웨어 이즈 더 수퍼마켓"],
+ ["Where is the nearest pharmacy?","가장 가까운 약국은 어디예요?","웨어 이즈 더 니어리스트 파머시"],
+ ["I need band-aids.","반창고가 필요해요.","아이 니드 밴드에이즈"],
+ ["Do you have sunscreen?","선크림 있어요?","두 유 해브 썬스크린"],
+ ["I'm just looking.","그냥 구경하는 중이에요.","아임 저스트 루킹"],
+ ["Can I get a bag?","봉투 하나 주시겠어요?","캔 아이 겟 어 백"],
+ ["Is there an ATM near here?","근처에 현금인출기 있어요?","이즈 데어 언 에이티엠 니어 히어"],
+ ["That's too expensive.","너무 비싸요.","댓츠 투 익스펜시브"],
+ ["I'll take it.","이걸로 할게요.","아일 테이크 잇"]
+],
+health:[
+ ["I need help.","도와주세요.","아이 니드 헬프"],
+ ["I have blisters on my feet.","발에 물집이 생겼어요.","아이 해브 블리스터즈 온 마이 핏"],
+ ["My knee hurts.","무릎이 아파요.","마이 니 허츠"],
+ ["I feel sick.","몸이 안 좋아요.","아이 필 씩"],
+ ["I have a headache.","머리가 아파요.","아이 해브 어 헤데이크"],
+ ["Please call an ambulance.","구급차를 불러 주세요.","플리즈 콜 언 앰뷸런스"],
+ ["Where is the hospital?","병원은 어디예요?","웨어 이즈 더 하스피럴"],
+ ["I need to rest.","좀 쉬어야 해요.","아이 니드 투 레스트"],
+ ["I'm very tired.","너무 피곤해요.","아임 베리 타이어드"],
+ ["Do you have painkillers?","진통제 있어요?","두 유 해브 페인킬러즈"]
+],
+talk:[
+ ["Buen Camino!","좋은 순례길 되세요! (순례자 인사)","부엔 카미노"],
+ ["Where did you start walking?","어디서부터 걸으셨어요?","웨어 디쥬 스타트 워킹"],
+ ["I started in Saint-Jean.","생장에서 출발했어요.","아이 스타티드 인 생장"],
+ ["How many kilometers today?","오늘 몇 킬로 걸으세요?","하우 메니 킬로미터즈 투데이"],
+ ["Why are you walking the Camino?","왜 순례길을 걸으세요?","와이 아 유 워킹 더 카미노"],
+ ["This is my first Camino.","이번이 첫 순례길이에요.","디스 이즈 마이 퍼스트 카미노"],
+ ["Let's walk together.","같이 걸어요.","렛츠 워크 투게더"],
+ ["The view is beautiful.","경치가 정말 아름다워요.","더 뷰 이즈 뷰리풀"],
+ ["I run a hair salon in Korea.","한국에서 미용실을 운영해요.","아이 런 어 헤어 살롱 인 코리아"],
+ ["Take care!","몸조심하세요!","테이크 케어"]
+],
+move:[
+ ["Where is the bus stop?","버스 정류장은 어디예요?","웨어 이즈 더 버스 스탑"],
+ ["One ticket to Santiago, please.","산티아고행 표 한 장 주세요.","원 티킷 투 산티아고, 플리즈"],
+ ["What time does the bus leave?","버스는 몇 시에 출발해요?","왓 타임 더즈 더 버스 리브"],
+ ["Can you call a taxi for me?","택시 좀 불러 주시겠어요?","캔 유 콜 어 택시 포 미"],
+ ["How long does it take?","얼마나 걸려요?","하우 롱 더즈 잇 테이크"],
+ ["Where is the train station?","기차역은 어디예요?","웨어 이즈 더 트레인 스테이션"],
+ ["Is this seat taken?","이 자리 주인 있어요?","이즈 디스 씻 테이큰"],
+ ["I want to send my backpack.","배낭을 다음 숙소로 보내고 싶어요.","아이 원ㅌ 투 센드 마이 백팩"],
+ ["Please stop here.","여기서 세워 주세요.","플리즈 스탑 히어"],
+ ["Where is the airport?","공항은 어디예요?","웨어 이즈 디 에어포트"]
+]};
+
+const ALL=[],BY={};
+Object.keys(D).forEach(c=>D[c].forEach((r,i)=>{const x={id:c+'-'+i,c,en:r[0],ko:r[1],pr:r[2]};ALL.push(x);BY[x.id]=x;}));
+
+const store={
+ get(k,d){try{const v=localStorage.getItem(k);return v===null?d:JSON.parse(v)}catch(e){return d}},
+ set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+};
+let mem=new Set(store.get('ce_mem',[])), wrong=new Set(store.get('ce_wrong',[]));
+let slow=store.get('ce_slow',true), onlyNew=store.get('ce_onlynew',false);
+function save(){store.set('ce_mem',[...mem]);store.set('ce_wrong',[...wrong]);updBadge();}
+
+let cat='greet', tab='list';
+const fc={i:0,flip:false};
+let qz=null;
+const app=document.getElementById('app');
+
+const catName=k=>CATS.find(c=>c.k===k).n;
+const items=()=>cat==='all'?ALL:ALL.filter(x=>x.c===cat);
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+
+// 발음
+let VOICES=[];
+function loadVoices(){try{VOICES=speechSynthesis.getVoices()}catch(e){}}
+if('speechSynthesis' in window){loadVoices();speechSynthesis.onvoiceschanged=loadVoices;}
+function speak(text){
+ if(!('speechSynthesis' in window)){alert('이 브라우저는 음성 기능을 지원하지 않아요.');return;}
+ speechSynthesis.cancel();
+ const u=new SpeechSynthesisUtterance(text);
+ u.lang='en-US'; u.rate=slow?0.75:1;
+ const v=VOICES.find(v=>v.lang==='en-US')||VOICES.find(v=>v.lang&&v.lang.startsWith('en'));
+ if(v)u.voice=v;
+ speechSynthesis.speak(u);
+}
+const speedBtn=document.getElementById('speed');
+function updSpeed(){speedBtn.textContent=slow?'🐢 천천히':'🐇 보통';}
+speedBtn.onclick=()=>{slow=!slow;store.set('ce_slow',slow);updSpeed();};
+updSpeed();
+
+function updBadge(){const b=document.getElementById('badge');b.style.display=wrong.size?'':'none';b.textContent=wrong.size;}
+
+function renderChips(){
+ const el=document.getElementById('chips');
+ el.style.display=tab==='review'?'none':'';
+ el.innerHTML=CATS.map(c=>`<button class="chip ${c.k===cat?'on':''}" data-cat="${c.k}">${c.n}</button>`).join('');
+}
+
+function render(){
+ renderChips();
+ document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.tab===tab));
+ ({list:renderList,card:renderCard,quiz:renderQuiz,review:renderReview})[tab]();
+}
+
+function rowHTML(x,extra){
+ return `<div class="row ${mem.has(x.id)?'done':''}">
+  <button class="spk" data-say="${x.id}" aria-label="듣기">🔊</button>
+  <div class="txt" data-say="${x.id}"><div class="en">${esc(x.en)}</div><div class="pr">${esc(x.pr)}</div><div class="ko">${esc(x.ko)}</div></div>
+  ${extra||`<button class="chk" data-mem="${x.id}" aria-label="외움 표시">${mem.has(x.id)?'✅':'⬜'}</button>`}
+ </div>`;
+}
+
+function renderList(){
+ const arr=items(), done=arr.filter(x=>mem.has(x.id)).length;
+ app.innerHTML=`<div class="prog"><div class="bar"><i style="width:${done/arr.length*100}%"></i></div><span>${done}/${arr.length} 외움</span></div>`
+ + arr.map(x=>rowHTML(x)).join('')
+ + `<div class="small">문장을 누르면 발음이 나와요 · ⬜를 누르면 외운 문장으로 표시돼요</div>`;
+}
+
+function cardList(){let l=items();if(onlyNew)l=l.filter(x=>!mem.has(x.id));return l;}
+function renderCard(){
+ const list=cardList();
+ let html=`<label class="opt"><input type="checkbox" id="onlyNew" ${onlyNew?'checked':''}> 안 외운 문장만 보기</label>`;
+ if(!list.length){app.innerHTML=html+`<div class="empty"><div class="e">🎉</div><h2>모두 외웠어요!</h2>다른 카테고리로 넘어가거나 퀴즈로 확인해 보세요.</div>`;return;}
+ if(fc.i>=list.length)fc.i=0;
+ const x=list[fc.i];
+ html+=`<div class="fc ${fc.flip?'flip':''}" data-act="flip">
+   <div class="front"><div class="tag">${catName(x.c)}</div><div class="big">${esc(x.en)}</div><div class="hint">탭하면 뜻과 발음이 보여요</div></div>
+   <div class="back"><div class="tag">뜻</div><div class="big kor">${esc(x.ko)}</div><div class="pr">${esc(x.pr)}</div><div class="en">${esc(x.en)}</div></div>
+  </div>
+  <div class="cnt">${fc.i+1} / ${list.length}</div>
+  <div class="btns"><button data-act="prev">◀ 이전</button><button data-act="say">🔊 듣기</button><button data-act="next">다음 ▶</button></div>
+  <button class="wide ${mem.has(x.id)?'ok':''}" data-act="mem" data-id="${x.id}">${mem.has(x.id)?'✅ 외웠어요 (다시 누르면 취소)':'외웠어요로 표시'}</button>`;
+ app.innerHTML=html;
+ fc.cur=x; fc.len=list.length;
+}
+
+function startQuiz(mode){
+ const pool=mode==='wrong'?ALL.filter(x=>wrong.has(x.id)):items();
+ if(!pool.length)return;
+ const qs=shuffle(pool).slice(0,mode==='wrong'?pool.length:10).map(x=>{
+  const type=Math.random()<0.5?'ko2en':'en2ko';
+  let src=ALL.filter(y=>y.c===x.c&&y.id!==x.id);
+  const opts=shuffle([x,...shuffle(src).slice(0,3)]);
+  return {x,type,opts};
+ });
+ qz={mode,qs,i:0,score:0,picked:null,wrongs:[]};
+ tab='quiz';render();
+}
+function renderQuiz(){
+ if(!qz){
+  const n=items().length;
+  app.innerHTML=`<div class="empty"><div class="e">✏️</div><h2>${catName(cat)} 퀴즈</h2>${cat==='all'?'전체 문장 중':'이 카테고리에서'} 랜덤으로 ${Math.min(10,n)}문제가 나와요.<br>틀린 문제는 자동으로 복습 목록에 들어가요.</div>
+   <button class="wide main" data-act="startQuiz">퀴즈 시작</button>
+   ${wrong.size?`<button class="wide" data-act="startWrong">틀린 문제만 풀기 (${wrong.size}개)</button>`:''}`;
+  return;
+ }
+ if(qz.i>=qz.qs.length){
+  const t=qz.qs.length, pct=Math.round(qz.score/t*100);
+  app.innerHTML=`<div class="empty"><div class="score">${qz.score} / ${t}</div><h2>${pct===100?'완벽해요! 🎉':pct>=70?'잘했어요! 👏':'조금만 더 해봐요! 💪'}</h2>${qz.wrongs.length?'틀린 문장은 복습 탭에 저장됐어요.':''}</div>
+   ${qz.wrongs.map(x=>rowHTML(x,' ')).join('')}
+   <button class="wide main" data-act="${qz.mode==='wrong'?'startWrong':'startQuiz'}">${qz.mode==='wrong'?'틀린 문제 다시 풀기':'다시 풀기'}</button>
+   <button class="wide" data-act="quitQuiz">처음으로</button>`;
+  if(qz.mode==='wrong'&&!wrong.size)app.querySelector('[data-act="startWrong"]').remove();
+  return;
+ }
+ const q=qz.qs[qz.i], x=q.x, ans=qz.picked!==null;
+ const ask=q.type==='ko2en'?'이 뜻의 영어 문장은?':'이 영어 문장의 뜻은?';
+ const prompt=q.type==='ko2en'?esc(x.ko):esc(x.en);
+ app.innerHTML=`<div class="prog"><div class="bar"><i style="width:${qz.i/qz.qs.length*100}%"></i></div><span>${qz.i+1}/${qz.qs.length}${qz.mode==='wrong'?' · 복습':''}</span></div>
+  <div class="q"><div class="ask">${ask}</div><div class="big">${prompt}</div>
+  ${q.type==='en2ko'?`<button class="spk" style="margin-top:12px" data-say="${x.id}">🔊</button>`:''}</div>
+  ${q.opts.map((o,k)=>{
+   let cls='';
+   if(ans){if(o.id===x.id)cls='right';else if(k===qz.picked)cls='wrong';}
+   const label=q.type==='ko2en'?esc(o.en)+(ans?`<small>${esc(o.pr)}</small>`:''):esc(o.ko);
+   return `<button class="choice ${cls}" data-pick="${k}" ${ans?'disabled':''}>${label}</button>`;
+  }).join('')}
+  ${ans?`<button class="wide main" data-act="nextQ">${qz.i+1<qz.qs.length?'다음 문제 ▶':'결과 보기'}</button>`:''}`;
+}
+function pick(k){
+ if(!qz||qz.picked!==null)return;
+ const q=qz.qs[qz.i]; qz.picked=k;
+ if(q.opts[k].id===q.x.id){qz.score++; if(qz.mode==='wrong')wrong.delete(q.x.id);}
+ else{wrong.add(q.x.id); qz.wrongs.push(q.x);}
+ save(); speak(q.x.en); renderQuiz();
+}
+
+function renderReview(){
+ const list=ALL.filter(x=>wrong.has(x.id));
+ let html='';
+ if(!list.length){html+=`<div class="empty"><div class="e">✨</div><h2>틀린 문제가 없어요</h2>퀴즈에서 틀린 문장이 여기에 모여요.</div>`;}
+ else{
+  html+=`<button class="wide main" data-act="startWrong" style="margin-top:6px">틀린 문제만 다시 풀기 (${list.length}개)</button>`;
+  CATS.slice(1).forEach(c=>{
+   const l=list.filter(x=>x.c===c.k); if(!l.length)return;
+   html+=`<div class="sec">${c.n}</div>`+l.map(x=>rowHTML(x,`<button class="del" data-unwrong="${x.id}">빼기</button>`)).join('');
+  });
+ }
+ const total=ALL.length, done=mem.size;
+ html+=`<div class="sec">📊 전체 진도</div><div class="prog"><div class="bar"><i style="width:${done/total*100}%"></i></div><span>${done}/${total} 외움</span></div>
+  <button class="wide" data-act="resetMem">외운 기록 초기화</button>
+  <div class="small">기록은 이 폰의 브라우저에 저장돼요.</div>`;
+ app.innerHTML=html;
+}
+
+// 이벤트
+document.getElementById('chips').addEventListener('click',e=>{
+ const b=e.target.closest('[data-cat]'); if(!b)return;
+ cat=b.dataset.cat; fc.i=0; fc.flip=false; qz=null; render();
+ b.scrollIntoView({inline:'center',block:'nearest',behavior:'smooth'});
+});
+document.getElementById('nav').addEventListener('click',e=>{
+ const b=e.target.closest('[data-tab]'); if(!b)return;
+ tab=b.dataset.tab; if(tab!=='quiz'||(qz&&qz.i>=qz.qs.length))qz=tab==='quiz'?null:qz; render(); window.scrollTo(0,0);
+});
+app.addEventListener('change',e=>{
+ if(e.target.id==='onlyNew'){onlyNew=e.target.checked;store.set('ce_onlynew',onlyNew);fc.i=0;fc.flip=false;renderCard();}
+});
+app.addEventListener('click',e=>{
+ const t=e.target;
+ let b;
+ if(b=t.closest('[data-mem]')){const id=b.dataset.mem;mem.has(id)?mem.delete(id):mem.add(id);save();render();return;}
+ if(b=t.closest('[data-say]')){speak(BY[b.dataset.say].en);return;}
+ if(b=t.closest('[data-pick]')){pick(+b.dataset.pick);return;}
+ if(b=t.closest('[data-unwrong]')){wrong.delete(b.dataset.unwrong);save();renderReview();return;}
+ if(!(b=t.closest('[data-act]')))return;
+ const a=b.dataset.act;
+ if(a==='flip'){fc.flip=!fc.flip;renderCard();if(!fc.flip)return;}
+ else if(a==='prev'){fc.i=(fc.i-1+fc.len)%fc.len;fc.flip=false;renderCard();}
+ else if(a==='next'){fc.i=(fc.i+1)%fc.len;fc.flip=false;renderCard();}
+ else if(a==='say'){speak(fc.cur.en);}
+ else if(a==='mem'){const id=b.dataset.id;if(mem.has(id))mem.delete(id);else{mem.add(id);}save();
+   if(onlyNew&&mem.has(id)){fc.flip=false;}renderCard();}
+ else if(a==='startQuiz')startQuiz('normal');
+ else if(a==='startWrong')startQuiz('wrong');
+ else if(a==='nextQ'){qz.i++;qz.picked=null;renderQuiz();window.scrollTo(0,0);}
+ else if(a==='quitQuiz'){qz=null;renderQuiz();}
+ else if(a==='resetMem'){if(confirm('외운 기록과 틀린 문제 기록을 모두 지울까요?')){mem.clear();wrong.clear();save();renderReview();}}
+});
+
+updBadge();
+render();
+</script>
+</body>
+</html>
