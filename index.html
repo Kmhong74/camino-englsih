@@ -5,6 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#2f5d50">
 <title>Camino English</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Camino EN">
 <style>
 :root{--bg:#f6f4ee;--card:#ffffff;--ink:#1f2a2a;--muted:#6b7570;--brand:#2f5d50;--accent:#e8b04a;--ok:#2e8b57;--bad:#c94a3a;--line:#e3dfd4;--soft:#eef3f0}
 @media (prefers-color-scheme:dark){:root{--bg:#121715;--card:#1d2421;--ink:#eef1ee;--muted:#9aa5a0;--line:#2c3531;--brand:#4f9a84;--soft:#22302b}}
@@ -611,6 +617,8 @@ app.addEventListener('click',e=>{
 
 updBadge();
 render();
+// 앱 설치·오프라인 지원
+if('serviceWorker' in navigator && location.protocol==='https:'){window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));}
 </script>
 </body>
 </html>
